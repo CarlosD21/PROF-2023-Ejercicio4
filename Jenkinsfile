@@ -4,11 +4,7 @@ pipeline {
         nombreBaseDeDatos = "Employees"
         archivoSQL = "sqlite.sql"
         nombreBackup="backup.db"
-        GITHUB_TOKEN = credentials('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')
-        GITHUB_REPO_OWNER = 'CarlosD21'
-        GITHUB_REPO_NAME = 'PROF-2023-Ejercicio4'
-        GITHUB_CONTEXT = 'Jenkins'
-        GITHUB_TARGET_URL = 'http://ec2-54-224-87-86.compute-1.amazonaws.com:8080/'
+       
     }
   
 
@@ -63,36 +59,7 @@ pipeline {
                 }
             }
         }
-        stage('Create GitHub Status') {
-            steps {
-                script {
-                    def commitHash = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
-
-
-                    // Enviar el estado de verificación a GitHub en caso de éxito
-                    if (currentBuild.resultIsBetterOrEqualTo('SUCCESS')) {
-                        githubCommitStatus(
-                            credentialsId: GITHUB_TOKEN,
-                            repoOwner: GITHUB_REPO_OWNER,
-                            repository: GITHUB_REPO_NAME,
-                            commitSha: commitHash,
-                            status: githubStatus
-                        )
-                    } else {
-                        // Cambiar el estado de verificación a 'failure' en caso de fallo
-                        githubStatus.state = 'failure'
-                        githubStatus.description = 'Build failed'
-                        githubCommitStatus(
-                            credentialsId: GITHUB_TOKEN,
-                            repoOwner: GITHUB_REPO_OWNER,
-                            repository: GITHUB_REPO_NAME,
-                            commitSha: commitHash,
-                            status: githubStatus
-                        )
-                    }
-                }
-            }
-        }
+       
         // Otras etapas del pipeline...
     }
 
