@@ -65,11 +65,9 @@ pipeline {
                 }
             }
         }
-       
-        // Otras etapas del pipeline...
-    }
-post {
-        success {
+
+
+            stage('Create GitHub Status Succes') {
             steps {
                 script {
                     def commitHash = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
@@ -91,35 +89,13 @@ post {
                     )
                 }
             }
-        
-    }
-        
-        failure {
-            steps {
-                script {
-                    def commitHash = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
-
-                    def githubStatus = [
-                        state: 'failure',  
-                        context: GITHUB_CONTEXT,
-                        description: 'Build successful',
-                        target_url: GITHUB_TARGET_URL
-                    ]
-
-                    // Enviar el estado de verificación a GitHub
-                    githubCommitStatus(
-                       // credentialsId: GITHUB_TOKEN,
-                        repoOwner: GITHUB_REPO_OWNER,
-                        repository: GITHUB_REPO_NAME,
-                        commitSha: commitHash,
-                        status: githubStatus
-                    )
-                }
-            }
         }
-        
+       
+        // Otras etapas del pipeline...
     }
-}
-   
 
+      
+    
+   
+}
 
