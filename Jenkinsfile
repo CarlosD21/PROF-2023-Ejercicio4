@@ -49,7 +49,7 @@ pipeline {
 		stage('Restaurar Base de Datos Anterior') {
             steps {
                 script {
-                  if (fileExists("${nombreBackup}.db")) {
+                  if (fileExists("${nombreBackup}")) {
                     // Restaurar la base de datos desde el archivo de backup
                     sh "sqlite3 ${nombreBaseDeDatos}.db \".restore ${nombreBackup}\""
                   }else{
