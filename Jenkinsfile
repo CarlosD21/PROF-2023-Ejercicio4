@@ -3,7 +3,7 @@ pipeline {
     environment {
         nombreBaseDeDatos = "Employees"
         archivoSQL = "sqlite.sql"
-        nombreBackup="backup"
+        nombreBackup="backup.db"
     }
   
 
