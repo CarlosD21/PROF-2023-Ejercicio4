@@ -15,8 +15,8 @@ pipeline {
         nombreBaseDeDatos = "Employees"
         archivoSQL = "sqlite.sql"
         nombreBackup="backup.db"
-        GITHUB_REPO_OWNER = 'CarlosD21'
-        GITHUB_REPO_NAME = 'PROF-2023-Ejercicio4'
+        REPO_OWNER = 'CarlosD21'
+        REPO_NAME = 'PROF-2023-Ejercicio4'
         GITHUB_CONTEXT = 'Jenkins'
         TARGET_URL="http://ec2-54-224-87-86.compute-1.amazonaws.com:8080/"
         STATE_SUCCESS = 'success'
