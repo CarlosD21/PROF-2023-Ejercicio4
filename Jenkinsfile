@@ -4,11 +4,15 @@ pipeline {
         nombreBaseDeDatos = "Employees"
         archivoSQL = "sqlite.sql"
         nombreBackup="backup.db"
-       // GITHUB_TOKEN = credentials('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')
         GITHUB_REPO_OWNER = 'CarlosD21'
         GITHUB_REPO_NAME = 'PROF-2023-Ejercicio4'
         GITHUB_CONTEXT = 'Jenkins'
-        GITHUB_TARGET_URL = 'http://ec2-54-224-87-86.compute-1.amazonaws.com:8080/'
+        TARGET_URL="http://ec2-54-224-87-86.compute-1.amazonaws.com:8080/"
+        STATE_SUCCESS = 'success'
+        STATE_FAILURE = 'failure'
+        CONTEXT = 'Jenkins'
+        DESCRIPTION_SUCCESS = 'Build successful'
+        DESCRIPTION_FAILURE = 'Build failed'
    
        
     }
@@ -66,35 +70,33 @@ pipeline {
             }
         }
 
-
-            stage('Create GitHub Status Succes') {
-            steps {
-                script {
-                    // Variables
-                    def REPO_OWNER="CarlosD21"
-                    def REPO_NAME="PROF-2023-Ejercicio4"
-                    def COMMIT_SHA = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
-                    def STATE="success" 
-                    def CONTEXT="Jenkins"
-                    def DESCRIPTION="Build successful"
-                    def TARGET_URL="http://ec2-54-224-87-86.compute-1.amazonaws.com:8080/"
-
-
-                    // Crea el estado de verificación
-                    sh """
-                        curl -X POST \
-                          -H 'Accept: application/vnd.github.v3+json' \
-                          'https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/statuses/$COMMIT_SHA' \
-                          -d '{"state": "$STATE", "context": "$CONTEXT", "description": "$DESCRIPTION", "target_url": "$TARGET_URL"}'
-                    """
-                }
-            }
-        }
        
         // Otras etapas del pipeline...
     }
+  post {
+        success {
+            // Acciones a realizar en caso de éxito
+            script {
+                updateGitHubStatus(STATE_SUCCESS, DESCRIPTION_SUCCESS)
+            }
+        }
+        failure {
+            // Acciones a realizar en caso de fallo
+            script {
+                updateGitHubStatus(STATE_FAILURE, DESCRIPTION_FAILURE)
+            }
+        }
+    }
+    def updateGitHubStatus(state, description) {
+         def COMMIT_SHA = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
 
-      
+         sh """
+              curl -X POST \
+              -H 'Accept: application/vnd.github.v3+json' \
+              'https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/statuses/$COMMIT_SHA' \
+               -d '{"state": "$state", "context": "$CONTEXT", "description": "$description", "target_url": "$TARGET_URL"}'
+             """
+    }
     
    
 }
