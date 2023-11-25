@@ -1,3 +1,14 @@
+
+   def updateGitHubStatus(state, description) {
+         def COMMIT_SHA = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+
+         sh """
+              curl -X POST \
+              -H 'Accept: application/vnd.github.v3+json' \
+              'https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/statuses/$COMMIT_SHA' \
+               -d '{"state": "$state", "context": "$CONTEXT", "description": "$description", "target_url": "$TARGET_URL"}'
+             """
+    }
 pipeline {
     agent any
     environment {
@@ -87,16 +98,7 @@ pipeline {
             }
         }
     }
-    def updateGitHubStatus(state, description) {
-         def COMMIT_SHA = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
-
-         sh """
-              curl -X POST \
-              -H 'Accept: application/vnd.github.v3+json' \
-              'https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/statuses/$COMMIT_SHA' \
-               -d '{"state": "$state", "context": "$CONTEXT", "description": "$description", "target_url": "$TARGET_URL"}'
-             """
-    }
+ 
     
    
 }
