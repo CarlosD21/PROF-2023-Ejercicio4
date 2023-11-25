@@ -70,23 +70,23 @@ pipeline {
             stage('Create GitHub Status Succes') {
             steps {
                 script {
-                    def commitHash = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+                    # Variables
+                    def REPO_OWNER="CarlosD21"
+                    def REPO_NAME="PROF-2023-Ejercicio4"
+                    def COMMIT_SHA = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+                    def STATE="success" 
+                    def CONTEXT="Jenkins"
+                    def DESCRIPTION="Build successful"
+                    def TARGET_URL="http://ec2-54-224-87-86.compute-1.amazonaws.com:8080/"
 
-                    def githubStatus = [
-                        state: 'success',  
-                        context: GITHUB_CONTEXT,
-                        description: 'Build successful',
-                        target_url: GITHUB_TARGET_URL
-                    ]
 
-                    // Enviar el estado de verificación a GitHub
-                    githubCommitStatus(
-                       // credentialsId: GITHUB_TOKEN,
-                        repoOwner: GITHUB_REPO_OWNER,
-                        repository: GITHUB_REPO_NAME,
-                        commitSha: commitHash,
-                        status: githubStatus
-                    )
+                    // Crea el estado de verificación
+                    sh """
+                        curl -X POST \
+                          -H 'Accept: application/vnd.github.v3+json' \
+                          'https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/statuses/$COMMIT_SHA' \
+                          -d '{"state": "$STATE", "context": "$CONTEXT", "description": "$DESCRIPTION", "target_url": "$TARGET_URL"}'
+                    """
                 }
             }
         }
