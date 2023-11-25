@@ -68,12 +68,6 @@ pipeline {
                 script {
                     def commitHash = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
 
-                    def githubStatus = [
-                        state: 'success',  // Puedes cambiar a 'failure' o 'error' según sea necesario
-                        context: GITHUB_CONTEXT,
-                        description: 'Build successful',
-                        target_url: GITHUB_TARGET_URL
-                    ]
 
                     // Enviar el estado de verificación a GitHub en caso de éxito
                     if (currentBuild.resultIsBetterOrEqualTo('SUCCESS')) {
