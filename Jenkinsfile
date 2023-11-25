@@ -4,6 +4,12 @@ pipeline {
         nombreBaseDeDatos = "Employees"
         archivoSQL = "sqlite.sql"
         nombreBackup="backup.db"
+       // GITHUB_TOKEN = credentials('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')
+        GITHUB_REPO_OWNER = 'CarlosD21'
+        GITHUB_REPO_NAME = 'PROF-2023-Ejercicio4'
+        GITHUB_CONTEXT = 'Jenkins'
+        GITHUB_TARGET_URL = 'http://ec2-54-224-87-86.compute-1.amazonaws.com:8080/'
+   
        
     }
   
@@ -62,7 +68,60 @@ pipeline {
        
         // Otras etapas del pipeline...
     }
+post {
+        success {
+          stage('Create GitHub Status Succes') {
+            steps {
+                script {
+                    def commitHash = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
 
-   
+                    def githubStatus = [
+                        state: 'success',  
+                        context: GITHUB_CONTEXT,
+                        description: 'Build successful',
+                        target_url: GITHUB_TARGET_URL
+                    ]
+
+                    // Enviar el estado de verificación a GitHub
+                    githubCommitStatus(
+                       // credentialsId: GITHUB_TOKEN,
+                        repoOwner: GITHUB_REPO_OWNER,
+                        repository: GITHUB_REPO_NAME,
+                        commitSha: commitHash,
+                        status: githubStatus
+                    )
+                }
+            }
+        }
+    }
+        
+        failure {
+          stage('Create GitHub Status Failure') {
+            steps {
+                script {
+                    def commitHash = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+
+                    def githubStatus = [
+                        state: 'failure',  
+                        context: GITHUB_CONTEXT,
+                        description: 'Build successful',
+                        target_url: GITHUB_TARGET_URL
+                    ]
+
+                    // Enviar el estado de verificación a GitHub
+                    githubCommitStatus(
+                       // credentialsId: GITHUB_TOKEN,
+                        repoOwner: GITHUB_REPO_OWNER,
+                        repository: GITHUB_REPO_NAME,
+                        commitSha: commitHash,
+                        status: githubStatus
+                    )
+                }
+            }
+        }
+        }
+    }
 }
+   
+
 
