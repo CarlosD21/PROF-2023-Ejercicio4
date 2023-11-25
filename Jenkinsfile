@@ -70,7 +70,6 @@ pipeline {
     }
 post {
         success {
-          stage('Create GitHub Status Succes') {
             steps {
                 script {
                     def commitHash = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
@@ -92,11 +91,10 @@ post {
                     )
                 }
             }
-        }
+        
     }
         
         failure {
-          stage('Create GitHub Status Failure') {
             steps {
                 script {
                     def commitHash = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
@@ -119,7 +117,7 @@ post {
                 }
             }
         }
-        }
+        
     }
 }
    
