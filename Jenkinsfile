@@ -70,7 +70,7 @@ pipeline {
             stage('Create GitHub Status Succes') {
             steps {
                 script {
-                    # Variables
+                    // Variables
                     def REPO_OWNER="CarlosD21"
                     def REPO_NAME="PROF-2023-Ejercicio4"
                     def COMMIT_SHA = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
